@@ -1492,7 +1492,7 @@ class Camera(QThread):
 		#main camera grab
 		while True:
 			if self.instant_camera.NumReadyBuffers:
-			    res = self.instant_camera.RetrieveResult(200)
+			    res = self.instant_camera.RetrieveResult(500)
 			    if res:
 				try:
 				    if res.GrabSucceeded():

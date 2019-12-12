@@ -207,6 +207,7 @@ for filename in natsorted(os.listdir(PATH_TO_IMAGES)):
 
 	#how to find where there is a slope change for a long time
 	#find the max gradient
+	
 
 
 	#seasonal decompose
