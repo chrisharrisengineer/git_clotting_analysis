@@ -35,7 +35,14 @@ full_path = Path("analysis/cropped_pics")
 
 endpoint = []
 endpoint_final_frame_number = []
-				
+	
+#numpy rolling averages function
+def movingaverage (values, window):
+            weights = np.repeat(1.0, window)/window
+            sma = np.convolve(values, weights, 'valid')
+            return sma
+
+			
 #for filename in sorted(os.listdir(path/picture_path), key=lamba)
 for filename in natsorted(os.listdir(path/picture_path)):
 	
@@ -52,14 +59,18 @@ for filename in natsorted(os.listdir(path/picture_path)):
 	#this_image = os.path.join('/home/bha/Desktop/lluFolder/masterProgram/01_26_19/analysis/cropped_pics', filename)
     this_image = os.path.join('/home/chris/Desktop/blood_data/analysis/cropped_pics', filename)	
     image_read = cv2.imread(this_image)
-	#plt.imshow(image_read, interpolation = 'bicubic')
-	#plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
-	#plt.show()
-	#plt.close()
+    #plt.imshow(image_read, cmap = 'gray', interpolation = 'bicubic')
+    #plt.imshow(cv2.cvtColor(image_read, cv2.COLOR_BGR2RGB))
+    #plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
+    #plt.show()
+    #plt.pause(.001)
+    #plt.clf()
+    #plt.close()
 	
-	#resized_image = cv2.resize(image_read, (1800, 400))	
-	#cv2.imshow('tube', resized_image)	
-	#cv2.waitKey(1)
+    #resized_image = cv2.resize(image_read, (1800, 400))	
+    resized_image = cv2.resize(image_read, (450, 100))	
+    cv2.imshow('tube', image_read)	
+    cv2.waitKey(1)
 
 	#store probabilities, when probability of 4/5 frames is over 80% a clot, call it at that 		time; first number is prob clot, second is prob non_clot		
 	#take last five (output values), add all up, / by 5, get at least 80%, then output that 	time	
@@ -109,9 +120,19 @@ for filename in natsorted(os.listdir(path/picture_path)):
         plt.draw()
         plt.pause(.001)
         plt.clf()
-		
-	
-	
+
+        #numpy rolling average
+    if frame_number > 1:
+        clot_moving_average = movingaverage(full_clot_probability_array, 20)
+        plt.plot(clot_moving_average)
+        plt.draw()
+
+    if frame_number > 1:
+        clot_moving_average = movingaverage(full_clot_probability_array, 50)
+        plt.plot(clot_moving_average)
+        plt.draw()
+        
+
 	#to pick endpoint, find where the first gradient trend is positive (>.25) for certain number of frames (50 for now)
 	#if frame_number > 482: 
 	#	#i_max = np.argmax(np.abs(np.gradient(trend, 50)))
